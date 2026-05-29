@@ -1,0 +1,1001 @@
+% ============================================================
+%  NURA DIGITAL — MODERN PITCH DECK
+%  Style: Swiss / Editorial Typography (inspired by reference)
+%  Compile with: xelatex or lualatex (for fontspec)
+%  No beamer required — pure TikZ layout
+% ============================================================
+\documentclass[12pt]{article}
+
+% ── Page geometry: 16:9 aspect ratio ──────────────────────
+\usepackage[paperwidth=254mm, paperheight=142.875mm, margin=0pt]{geometry}
+
+% ── Core packages ──────────────────────────────────────────
+\usepackage{fontspec}
+\usepackage{tikz}
+\usetikzlibrary{calc, positioning, backgrounds}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{calc}
+\usepackage{etoolbox}
+\usepackage[hidelinks]{hyperref}
+\usepackage{textcomp}
+
+% ── Remove page numbers and headers ───────────────────────
+\pagestyle{empty}
+
+% Use Editorial New and Century Gothic
+\defaultfontfeatures{Ligatures=TeX}
+\setmainfont{PPEditorialNew}[
+  Path = C:/Users/anani/AppData/Local/Microsoft/Windows/Fonts/,
+  Extension = .otf,
+  UprightFont = *-Ultrabold,
+  BoldFont = *-Ultrabold,
+  ItalicFont = *-Italic,
+  BoldItalicFont = *-UltraboldItalic
+]
+\setsansfont{Century Gothic}
+\renewcommand{\familydefault}{\sfdefault}
+% ── Color Palette ──────────────────────────────────────────
+\definecolor{bgwhite}{HTML}{FAFAFA}      % Warm white background
+\definecolor{bglight}{HTML}{F2F2F0}      % Light grey panel
+\definecolor{primary}{HTML}{1A1A1A}      % Near-black text
+\definecolor{secondary}{HTML}{888888}    % Grey secondary text
+\definecolor{accent}{HTML}{E8432A}       % Vermilion / red-orange accent
+\definecolor{accentdark}{HTML}{C93820}   % Darker accent for depth
+\definecolor{divider}{HTML}{D0D0D0}      % Hairline divider color
+\definecolor{framebg}{HTML}{2A2A2A}      % Dark outer frame (like reference)
+
+% ── Page counter ───────────────────────────────────────────
+\newcounter{pageno}
+\setcounter{pageno}{0}
+
+% ── Reusable layout command ────────────────────────────────
+% Draws the white "card" on the dark background, with header
+\newcommand{\slidecard}[3][]{%
+  % #1 = optional TikZ options
+  % #2 = section label (upper-left)
+  % #3 = body content (TikZ nodes placed inside)
+  \stepcounter{pageno}%
+  \mbox{\rule{0pt}{1pt}}% Force page creation reliably
+  \begin{tikzpicture}[remember picture, overlay]
+    % ── White card ──
+    \fill[bgwhite, rounded corners=6pt]
+      ([xshift=6mm, yshift=-4mm]current page.north west)
+      rectangle
+      ([xshift=-6mm, yshift=4mm]current page.south east);
+    % ── Header bar ──
+    \node[anchor=north west, font=\fontsize{8}{10}\selectfont\bfseries,
+          text=primary, inner sep=0pt]
+      at ([xshift=14mm, yshift=-10mm]current page.north west)
+      {\MakeUppercase{#2}};
+    % ── Page number ──
+    \node[anchor=north, font=\fontsize{7}{9}\selectfont,
+          text=secondary, inner sep=0pt]
+      at ([yshift=-10mm]current page.north)
+      {PAGE\,(N\textsuperscript{o}\,\ifnum\value{pageno}<10 0\fi\arabic{pageno})};
+    % ── Copyright ──
+    \node[anchor=north east, font=\fontsize{7}{9}\selectfont,
+          text=accent, inner sep=0pt]
+      at ([xshift=-14mm, yshift=-10mm]current page.north east)
+      {\textcopyright 2026};
+    % ── Page number (shifted left to make room for copyright) ──
+    % ── Body content ──
+    #3
+  \end{tikzpicture}
+  \par
+}
+
+% ── Custom bullet style ────────────────────────────────────
+\newcommand{\blt}{\textcolor{accent}{$\bullet$}\hspace{6pt}}
+\newcommand{\bltsm}{\textcolor{secondary}{$\bullet$}\hspace{5pt}}
+% ── Dot navigation indicator (round, like reference) ──────
+\newcommand{\dotindicator}{\textcolor{primary}{$\bullet$}\hspace{1pt}\textcolor{secondary!40}{$\circ$}}
+
+% ── Display font helpers ──
+\newcommand{\displayfont}[1]{{\rmfamily\bfseries #1}}
+
+% ── Display number (large accent number) ───────────────────
+\newcommand{\displaynum}[1]{%
+  {\fontsize{72}{78}\selectfont\displayfont{\textcolor{accent}{#1}}}%
+}
+\newcommand{\displaynumsm}[1]{%
+  {\fontsize{48}{54}\selectfont\displayfont{\textcolor{accent}{#1}}}%
+}
+\newcommand{\displaynumgrey}[1]{%
+  {\fontsize{72}{78}\selectfont\displayfont{\textcolor{primary!20}{#1}}}%
+}
+
+% ── Section heading style ──────────────────────────────────
+\newcommand{\sechead}[1]{%
+  {\fontsize{8}{10}\selectfont\bfseries\MakeUppercase{#1}}%
+}
+\newcommand{\metriklabel}[1]{%
+  {\fontsize{7}{9}\selectfont\MakeUppercase{#1}}%
+}
+
+% ── Metadata (Handled manually inside the slides) ──
+
+% ============================================================
+\begin{document}
+
+% ================================================================
+% SLIDE 0 — TITLE
+% ================================================================
+\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{PITCH DECK}{%
+  % ── Large title ──
+  \node[anchor=west, inner sep=0pt, text width=0.50\paperwidth]
+    at ([xshift=14mm, yshift=-8mm]current page.west)
+    {{\fontsize{42}{46}\selectfont\displayfont{%
+      Nura\par
+      \textcolor{accent}{Digital} ---\par
+      \color{primary!55}Digital Partner\par
+      for Ethiopian\par
+      SMBs.}}};
+  % ── Slide number big ──
+  \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=-26mm]current page.north east)
+    {\displaynum{01}};
+  % ── Tagline ──
+  \node[anchor=south east, inner sep=0pt, text width=0.34\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary, align=left]
+    at ([xshift=-14mm, yshift=22mm]current page.south east)
+    {\MakeUppercase{Affordable, reliable, locally supported digital
+    systems that help Ethiopian businesses grow. Custom web apps,
+    mobile apps, automation \& AI --- all on a monthly ETB subscription.}};
+  % ── Vertical divider (splits card into left/right like reference) ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=0mm, yshift=-4mm]current page.north) --
+    ([xshift=0mm, yshift=4mm]current page.south);
+  % ── Dot indicator (round) ──
+  \node[anchor=west, inner sep=0pt]
+    at ([xshift=14mm, yshift=16mm]current page.south west)
+    {\dotindicator};
+  % ── Date ──
+  \node[anchor=south east, inner sep=0pt,
+        font=\fontsize{7}{9}\selectfont, text=secondary]
+    at ([xshift=-14mm, yshift=10mm]current page.south east)
+    {May 29, 2026};
+}
+
+
+
+% ================================================================
+% SLIDE 1 — THE PROBLEM
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{THE PROBLEM}{%
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.88\paperwidth]
+    at ([xshift=14mm, yshift=-32mm]current page.north west)
+    {{\fontsize{34}{38}\selectfont\displayfont{%
+      Paper records,\par
+      \textcolor{accent}{fragmented tools,}\par
+      \color{primary!55}and zero digital\par
+      infrastructure.}}};
+  % ── Divider line ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=38mm]current page.south west) --
+    ([xshift=-14mm, yshift=38mm]current page.south east);
+  % ── Three barriers ──
+  \node[anchor=south west, inner sep=0pt, text width=0.26\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=primary]
+    at ([xshift=14mm, yshift=14mm]current page.south west)
+    {\textcolor{accent}{\fontsize{28}{32}\selectfont\bfseries 01}\par
+     \vspace{2pt}\metriklabel{Knowledge Gap}\par
+     \vspace{1pt}\color{secondary}Limited technical expertise to digitize operations.};
+  \node[anchor=south, inner sep=0pt, text width=0.26\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=primary]
+    at ([yshift=14mm]current page.south)
+    {\textcolor{accent}{\fontsize{28}{32}\selectfont\bfseries 02}\par
+     \vspace{2pt}\metriklabel{Prohibitive Cost}\par
+     \vspace{1pt}\color{secondary}In-house engineers unaffordable for most SMBs.};
+  \node[anchor=south east, inner sep=0pt, text width=0.26\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=primary]
+    at ([xshift=-14mm, yshift=14mm]current page.south east)
+    {\textcolor{accent}{\fontsize{28}{32}\selectfont\bfseries 03}\par
+     \vspace{2pt}\metriklabel{No Maintenance}\par
+     \vspace{1pt}\color{secondary}Freelancers disappear after delivery; software breaks.};
+  % ── Dot indicator (round) ──
+  \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=44mm]current page.south east)
+    {\dotindicator};
+}
+
+
+
+% ================================================================
+% SLIDE 2 — THE SOLUTION
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{THE SOLUTION}{%
+  % ── Big statement ──
+  \node[anchor=north west, inner sep=0pt, text width=0.88\paperwidth]
+    at ([xshift=14mm, yshift=-30mm]current page.north west)
+    {{\fontsize{30}{35}\selectfont\displayfont{%
+      Unlike freelancers and foreign SaaS,\par
+      \textcolor{accent}{Nura Digital} is built as your\par
+      long-term \textcolor{accent}{managed digital partner}\par
+      \color{primary!55}--- not a one-off project shop.}}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=38mm]current page.south west) --
+    ([xshift=-14mm, yshift=38mm]current page.south east);
+  % ── Bottom metrics ──
+  \node[anchor=south west, inner sep=0pt,
+        font=\fontsize{7}{9}\selectfont, text=accent]
+    at ([xshift=14mm, yshift=42mm]current page.south west)
+    {\fbox{\fontsize{6}{8}\selectfont\textcolor{accent}{\,Key Metrics\,}}};
+  % Metric 1
+  \node[anchor=south west, inner sep=0pt]
+    at ([xshift=10mm, yshift=14mm]current page.south)
+    {\textcolor{accent}{\fontsize{34}{38}\selectfont\bfseries 495K}};
+  \node[anchor=south west, inner sep=0pt, font=\fontsize{7}{10}\selectfont\bfseries, text=primary, align=left]
+    at ([xshift=48mm, yshift=16mm]current page.south)
+    {ETB CAPITAL\\ \metriklabel{ASK}};
+  % Metric 2
+  \node[anchor=south west, inner sep=0pt]
+    at ([xshift=75mm, yshift=14mm]current page.south)
+    {\textcolor{accent}{\fontsize{34}{38}\selectfont\bfseries M7}};
+  \node[anchor=south west, inner sep=0pt, font=\fontsize{7}{10}\selectfont\bfseries, text=primary, align=left]
+    at ([xshift=98mm, yshift=16mm]current page.south)
+    {BREAK-EVEN\\ \metriklabel{MONTH}};
+  % ── Body description ──
+  \node[anchor=south west, inner sep=0pt, text width=0.42\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary, align=left]
+    at ([xshift=14mm, yshift=12mm]current page.south west)
+    {\MakeUppercase{Custom web apps, mobile apps, automation tools, and
+    AI-assisted business systems --- all on a monthly ETB subscription.
+    100\% equity, zero debt.}};
+  % ── Dot separators on divider line ──
+  \node[anchor=center, inner sep=0pt] at ([xshift=-30mm, yshift=38mm]current page.south)
+    {\textcolor{primary}{$\bullet$}};
+  \node[anchor=center, inner sep=0pt] at ([xshift=30mm, yshift=38mm]current page.south)
+    {\textcolor{primary}{$\bullet$}};
+  % ── Dot indicator (round) ──
+  \node[anchor=south east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=44mm]current page.south east)
+    {\dotindicator};
+}
+
+
+
+% ================================================================
+% SLIDE 3 — PRODUCT & SUBSCRIPTION MODEL
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{PRODUCT \& MODEL}{%
+  % ── Section number ──
+  \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=-26mm]current page.north east)
+    {\displaynumgrey{03}};
+  % ── Workflow header ──
+  \node[anchor=north west, inner sep=0pt, text width=0.60\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{22}{26}\selectfont\displayfont{%
+      5-Stage \textcolor{accent}{Workflow}}}};
+  % ── Workflow steps ──
+  \node[anchor=north west, inner sep=0pt, text width=0.85\paperwidth,
+        font=\fontsize{9}{14}\selectfont, text=primary]
+    at ([xshift=14mm, yshift=-46mm]current page.north west)
+    {Discovery \& Scoping\hspace{6pt}{\color{accent}$\rightarrow$}\hspace{6pt}%
+     Design \& Prototype\hspace{6pt}{\color{accent}$\rightarrow$}\hspace{6pt}%
+     Development\hspace{6pt}{\color{accent}$\rightarrow$}\hspace{6pt}%
+     Cloud Deploy\hspace{6pt}{\color{accent}$\rightarrow$}\hspace{6pt}%
+     Maintenance};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=0mm]current page.west) --
+    ([xshift=-14mm, yshift=0mm]current page.east);
+  % ── Tier heading ──
+  \node[anchor=west, inner sep=0pt, text width=0.60\paperwidth,
+        font=\fontsize{8}{10}\selectfont\bfseries, text=primary]
+    at ([xshift=14mm, yshift=-6mm]current page.west)
+    {\MakeUppercase{Tiered Subscriptions (all in ETB)}};
+  % ── Tier cards ──
+  % Starter
+  \node[anchor=north west, inner sep=0pt, text width=0.26\paperwidth]
+    at ([xshift=14mm, yshift=-18mm]current page.west)
+    {{\fontsize{7}{9}\selectfont\color{secondary}\MakeUppercase{Tier 01}}\par
+     \vspace{2pt}{\fontsize{16}{19}\selectfont\bfseries Starter}\par
+     \vspace{1pt}{\fontsize{22}{26}\selectfont\bfseries\textcolor{accent}{5,000}}\par
+     {\fontsize{8}{10}\selectfont\color{secondary}ETB / month}\par
+     \vspace{4pt}{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Basic website or workflow tool + minor updates}};
+  % Growth
+  \node[anchor=north, inner sep=0pt, text width=0.26\paperwidth]
+    at ([yshift=-18mm]current page.center)
+    {{\fontsize{7}{9}\selectfont\color{secondary}\MakeUppercase{Tier 02}}\par
+     \vspace{2pt}{\fontsize{16}{19}\selectfont\bfseries Growth}\par
+     \vspace{1pt}{\fontsize{22}{26}\selectfont\bfseries\textcolor{accent}{7,500}}\par
+     {\fontsize{8}{10}\selectfont\color{secondary}ETB / month}\par
+     \vspace{4pt}{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Custom web app, maintenance, analytics \& support}};
+  % Custom
+  \node[anchor=north east, inner sep=0pt, text width=0.26\paperwidth]
+    at ([xshift=-14mm, yshift=-18mm]current page.east)
+    {{\fontsize{7}{9}\selectfont\color{secondary}\MakeUppercase{Tier 03}}\par
+     \vspace{2pt}{\fontsize{16}{19}\selectfont\bfseries Custom}\par
+     \vspace{1pt}{\fontsize{22}{26}\selectfont\bfseries\textcolor{accent}{12,000+}}\par
+     {\fontsize{8}{10}\selectfont\color{secondary}ETB / month}\par
+     \vspace{4pt}{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Enterprise integrations, dashboards \& automation}};
+  % ── IP note ──
+  \node[anchor=south west, inner sep=0pt, text width=0.80\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary]
+    at ([xshift=14mm, yshift=10mm]current page.south west)
+    {\MakeUppercase{IP \& Tech Edge: Cloud-native on AWS/DigitalOcean.
+    AI Bot handles Level-1 support for 2,500 ETB/mo. All code \& IP
+    owned by Nura Digital.}};
+}
+
+
+
+% ================================================================
+% SLIDE 4 — COMPETITIVE ADVANTAGE
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{WHY WE WIN}{%
+  % ── Section number ──
+  \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=-26mm]current page.north east)
+    {\displaynumgrey{04}};
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.60\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{26}{30}\selectfont\displayfont{%
+      Our \textcolor{accent}{Competitive}\par
+      Edge}}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=4mm]current page.west) --
+    ([xshift=-14mm, yshift=4mm]current page.east);
+  % ── Competitor rows ──
+  % Row 1 — Freelancers
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=8mm]current page.west)
+    {{\fontsize{8}{10}\selectfont\bfseries\color{secondary}\MakeUppercase{vs Freelancers}}\par
+     \vspace{2pt}{\fontsize{7.5}{11}\selectfont\color{secondary}Disappear after launch}};
+  \node[anchor=north east, inner sep=0pt, text width=0.42\paperwidth, align=right]
+    at ([xshift=-14mm, yshift=8mm]current page.east)
+    {{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Structured team, SLAs, \textcolor{accent}{\bfseries post-launch support}}};
+  % Row divider
+  \draw[divider!50, line width=0.3pt]
+    ([xshift=14mm, yshift=-8mm]current page.west) --
+    ([xshift=-14mm, yshift=-8mm]current page.east);
+  % Row 2 — International SaaS
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=-12mm]current page.west)
+    {{\fontsize{8}{10}\selectfont\bfseries\color{secondary}\MakeUppercase{vs International SaaS}}\par
+     \vspace{2pt}{\fontsize{7.5}{11}\selectfont\color{secondary}USD pricing, no local fit}};
+  \node[anchor=north east, inner sep=0pt, text width=0.42\paperwidth, align=right]
+    at ([xshift=-14mm, yshift=-12mm]current page.east)
+    {{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Custom-built, \textcolor{accent}{\bfseries ETB-priced}, local context}};
+  % Row divider
+  \draw[divider!50, line width=0.3pt]
+    ([xshift=14mm, yshift=-28mm]current page.west) --
+    ([xshift=-14mm, yshift=-28mm]current page.east);
+  % Row 3 — Large Integrators
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=-32mm]current page.west)
+    {{\fontsize{8}{10}\selectfont\bfseries\color{secondary}\MakeUppercase{vs Large IT Integrators}}\par
+     \vspace{2pt}{\fontsize{7.5}{11}\selectfont\color{secondary}Enterprise-only, high cost}};
+  \node[anchor=north east, inner sep=0pt, text width=0.42\paperwidth, align=right]
+    at ([xshift=-14mm, yshift=-32mm]current page.east)
+    {{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Faster delivery, \textcolor{accent}{\bfseries direct founding team access}}};
+  % Row divider
+  \draw[divider!50, line width=0.3pt]
+    ([xshift=14mm, yshift=-48mm]current page.west) --
+    ([xshift=-14mm, yshift=-48mm]current page.east);
+  % Row 4 — In-house
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=-52mm]current page.west)
+    {{\fontsize{8}{10}\selectfont\bfseries\color{secondary}\MakeUppercase{vs In-House Hiring}}\par
+     \vspace{2pt}{\fontsize{7.5}{11}\selectfont\color{secondary}Expensive to recruit \& retain}};
+  \node[anchor=north east, inner sep=0pt, text width=0.42\paperwidth, align=right]
+    at ([xshift=-14mm, yshift=-52mm]current page.east)
+    {{\fontsize{7.5}{11}\selectfont\color{primary}%
+     Full digital team at a \textcolor{accent}{\bfseries fraction of the cost}}};
+}
+
+
+
+% ================================================================
+% SLIDE 5 — TARGET MARKET & GTM
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{TARGET MARKET}{%
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.56\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{28}{32}\selectfont\displayfont{%
+      Addis Ababa's\par
+      \textcolor{accent}{growth-oriented}\par
+      SMBs.}}};
+  % ── Right column content ──
+  \node[anchor=north east, inner sep=0pt, text width=0.34\paperwidth,
+        font=\fontsize{8}{12}\selectfont, text=primary]
+    at ([xshift=-14mm, yshift=-28mm]current page.north east)
+    {\textcolor{accent}{\bfseries WHO}\par
+     \vspace{2pt}\color{secondary}SMB owners \& operations leads (25--55) in Bole,
+     Mexico, Megenagna, Kazanchis.\par
+     \vspace{8pt}\textcolor{accent}{\bfseries NEED}\par
+     \vspace{2pt}\color{secondary}Websites, booking systems, inventory tools,
+     customer portals --- affordable and in ETB.\par
+     \vspace{8pt}\textcolor{accent}{\bfseries SALES}\par
+     \vspace{2pt}\color{secondary}Free discovery session → tailored demo →
+     subscription contract.};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=34mm]current page.south west) --
+    ([xshift=-14mm, yshift=34mm]current page.south east);
+  % ── Promotion strategy ──
+  \node[anchor=south west, inner sep=0pt, text width=0.20\paperwidth]
+    at ([xshift=14mm, yshift=10mm]current page.south west)
+    {{\fontsize{7}{9}\selectfont\color{secondary}\MakeUppercase{Monthly Budget}}\par
+     \vspace{2pt}{\fontsize{26}{30}\selectfont\bfseries\textcolor{accent}{40K}}\par
+     {\fontsize{8}{10}\selectfont\color{secondary}ETB / month}};
+  \node[anchor=south, inner sep=0pt, text width=0.50\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=primary]
+    at ([xshift=8mm, yshift=10mm]current page.south)
+    {\blt LinkedIn, Instagram, Facebook targeting local business owners\par
+     \vspace{2pt}\blt Direct outreach and live demos in target business hubs\par
+     \vspace{2pt}\blt Referral discounts + SME networking events};
+}
+
+
+
+% ================================================================
+% SLIDE 6 — REVENUE ENGINE (Numbers-focused like reference)
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{REVENUE ENGINE}{%
+  % ── Header line ──
+  \node[anchor=north west, inner sep=0pt, text width=0.50\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{42}{46}\selectfont\displayfont{2026}}};
+  \node[anchor=north, inner sep=0pt]
+    at ([yshift=-30mm]current page.north)
+    {{\fontsize{16}{20}\selectfont\color{accent}$\rightarrow$}};
+  \node[anchor=north east, inner sep=0pt, text width=0.38\paperwidth, align=right]
+    at ([xshift=-14mm, yshift=-28mm]current page.north east)
+    {{\fontsize{42}{46}\selectfont\displayfont{\color{primary!55} in Numbers}}};
+  % ── Dot indicator (round) ──
+  \node[anchor=south east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=44mm]current page.south east)
+    {\dotindicator};
+  % ── Subhead ──
+  \node[anchor=north east, inner sep=0pt, text width=0.44\paperwidth, align=right,
+        font=\fontsize{7.5}{11}\selectfont\bfseries, text=primary]
+    at ([xshift=-14mm, yshift=-44mm]current page.north east)
+    {\MakeUppercase{Subscription-compounding growth driven by
+    consistent client acquisition and strong retention.}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=-64mm]current page.north west) --
+    ([xshift=-14mm, yshift=-64mm]current page.north east);
+  % ── Vertical divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=0mm, yshift=-68mm]current page.north) --
+    ([xshift=0mm, yshift=16mm]current page.south);
+  % ── Left metric: Growth Rate ──
+  \node[anchor=north west, inner sep=0pt, text width=0.42\paperwidth]
+    at ([xshift=14mm, yshift=-68mm]current page.north west)
+    {{\fontsize{60}{66}\selectfont\bfseries\textcolor{accent}{+3}}\par
+     \vspace{2pt}{\fontsize{7}{9}\selectfont\color{secondary}---\hspace{4pt}\MakeUppercase{New Clients / Month}}};
+  \node[anchor=south west, inner sep=0pt, text width=0.42\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary]
+    at ([xshift=14mm, yshift=14mm]current page.south west)
+    {\MakeUppercase{Month 12: 36 clients, 270K ETB MRR.
+    Year 2: 4.99M ETB ARR. Year 3: 8.2M ETB ARR with 90+ clients.}};
+  % ── Right metric: Unit Economics ──
+  \node[anchor=north west, inner sep=0pt, text width=0.42\paperwidth, align=left]
+    at ([xshift=141mm, yshift=-68mm]current page.north west)
+    {{\fontsize{60}{66}\selectfont\bfseries\textcolor{accent}{6,850}}\par
+     \vspace{2pt}{\fontsize{7}{9}\selectfont\color{secondary}---\hspace{4pt}\MakeUppercase{ETB Margin / Client / Month}}};
+  \node[anchor=south west, inner sep=0pt, text width=0.42\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary, align=left]
+    at ([xshift=141mm, yshift=14mm]current page.south west)
+    {\MakeUppercase{Revenue per client: 7,500 ETB/mo.
+    Cloud/API cost: 650 ETB/mo. Net margin: 91\% per client.}};
+}
+
+
+
+% ================================================================
+% SLIDE 7 — THE FOUNDING TEAM
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{THE TEAM}{%
+  % ── Section number ──
+  \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=-26mm]current page.north east)
+    {\displaynumgrey{07}};
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.50\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{24}{28}\selectfont\displayfont{%
+      Five \textcolor{accent}{founders,}\par
+      one mission.}}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=6mm]current page.west) --
+    ([xshift=-14mm, yshift=6mm]current page.east);
+  % ── Team row 1 ──
+  \node[anchor=north west, inner sep=0pt, text width=0.26\paperwidth]
+    at ([xshift=14mm, yshift=0mm]current page.west)
+    {{\fontsize{12}{15}\selectfont\bfseries Aman Abdulkadir}\par
+     {\fontsize{8}{10}\selectfont\color{accent}\bfseries CEO}\par
+     \vspace{1pt}{\fontsize{7}{10}\selectfont\color{secondary}Strategy, partnerships, B2B sales}};
+  \node[anchor=north, inner sep=0pt, text width=0.26\paperwidth]
+    at ([yshift=0mm]current page.center)
+    {{\fontsize{12}{15}\selectfont\bfseries Amanuel Daniel}\par
+     {\fontsize{8}{10}\selectfont\color{accent}\bfseries CTO}\par
+     \vspace{1pt}{\fontsize{7}{10}\selectfont\color{secondary}Architecture, cloud, AI operations}};
+  \node[anchor=north east, inner sep=0pt, text width=0.26\paperwidth]
+    at ([xshift=-14mm, yshift=0mm]current page.east)
+    {{\fontsize{12}{15}\selectfont\bfseries Ananiya Jemberu}\par
+     {\fontsize{8}{10}\selectfont\color{accent}\bfseries CMO}\par
+     \vspace{1pt}{\fontsize{7}{10}\selectfont\color{secondary}Marketing, sales, customer acquisition}};
+  % ── Team row 2 ──
+  \node[anchor=north west, inner sep=0pt, text width=0.26\paperwidth]
+    at ([xshift=14mm, yshift=-30mm]current page.west)
+    {{\fontsize{12}{15}\selectfont\bfseries Alula Moges}\par
+     {\fontsize{8}{10}\selectfont\color{accent}\bfseries Product / UX}\par
+     \vspace{1pt}{\fontsize{7}{10}\selectfont\color{secondary}Product design, UI/UX, client journey}};
+  \node[anchor=north, inner sep=0pt, text width=0.26\paperwidth]
+    at ([yshift=-30mm]current page.center)
+    {{\fontsize{12}{15}\selectfont\bfseries Andreas Tariku}\par
+     {\fontsize{8}{10}\selectfont\color{accent}\bfseries Lead Dev}\par
+     \vspace{1pt}{\fontsize{7}{10}\selectfont\color{secondary}Web/mobile dev, APIs, deployment}};
+  % ── Hiring roadmap ──
+  \node[anchor=south west, inner sep=0pt, text width=0.80\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary]
+    at ([xshift=14mm, yshift=10mm]current page.south west)
+    {\MakeUppercase{Hiring: Months 1--6 founders only → Months 7--12
+    add Sales Lead + Support → Year 2 add two engineers for niche SaaS modules.}};
+}
+
+
+
+% ================================================================
+% SLIDE 8 — USE OF FUNDS
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{USE OF FUNDS}{%
+  % ── Big number ──
+  \node[anchor=north west, inner sep=0pt]
+    at ([xshift=14mm, yshift=-26mm]current page.north west)
+    {{\fontsize{52}{56}\selectfont\displayfont{\textcolor{accent}{495,000}}}};
+  \node[anchor=north west, inner sep=0pt,
+        font=\fontsize{10}{13}\selectfont, text=primary]
+    at ([xshift=14mm, yshift=-58mm]current page.north west)
+    {ETB Total Capital\hspace{8pt}{\color{secondary}|}\hspace{8pt}%
+     {\color{secondary}100\% Founder Equity, Zero Debt}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=-68mm]current page.north west) --
+    ([xshift=-14mm, yshift=-68mm]current page.north east);
+  % ── Fund allocation rows ──
+  % Working Capital
+  \node[anchor=north west, inner sep=0pt, text width=0.40\paperwidth,
+        font=\fontsize{9}{12}\selectfont]
+    at ([xshift=14mm, yshift=-72mm]current page.north west)
+    {\bfseries Working capital reserve};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{9}{12}\selectfont\bfseries, text=accent]
+    at ([xshift=-80mm, yshift=-72mm]current page.north east)
+    {253,500};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{9}{12}\selectfont, text=secondary]
+    at ([xshift=-14mm, yshift=-72mm]current page.north east)
+    {51.2\%};
+  % Bar
+  \fill[accent!20] ([xshift=14mm, yshift=-82mm]current page.north west)
+    rectangle ++(0.512\paperwidth*0.64, 3pt);
+  \fill[accent] ([xshift=14mm, yshift=-82mm]current page.north west)
+    rectangle ++(0.512\paperwidth*0.64, 3pt);
+  % Equipment
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-85mm]current page.north west) --
+    ([xshift=-14mm, yshift=-85mm]current page.north east);
+  \node[anchor=north west, inner sep=0pt, text width=0.40\paperwidth,
+        font=\fontsize{8}{11}\selectfont]
+    at ([xshift=14mm, yshift=-88mm]current page.north west)
+    {Equipment \& setup};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont\bfseries, text=primary]
+    at ([xshift=-80mm, yshift=-88mm]current page.north east)
+    {80,000};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont, text=secondary]
+    at ([xshift=-14mm, yshift=-88mm]current page.north east)
+    {16.2\%};
+  % Marketing
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-98mm]current page.north west) --
+    ([xshift=-14mm, yshift=-98mm]current page.north east);
+  \node[anchor=north west, inner sep=0pt, text width=0.40\paperwidth,
+        font=\fontsize{8}{11}\selectfont]
+    at ([xshift=14mm, yshift=-101mm]current page.north west)
+    {Marketing launch};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont\bfseries, text=primary]
+    at ([xshift=-80mm, yshift=-101mm]current page.north east)
+    {40,000};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont, text=secondary]
+    at ([xshift=-14mm, yshift=-101mm]current page.north east)
+    {8.1\%};
+  % Premises
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-111mm]current page.north west) --
+    ([xshift=-14mm, yshift=-111mm]current page.north east);
+  \node[anchor=north west, inner sep=0pt, text width=0.40\paperwidth,
+        font=\fontsize{8}{11}\selectfont]
+    at ([xshift=14mm, yshift=-114mm]current page.north west)
+    {Premises / rent deposit};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont\bfseries, text=primary]
+    at ([xshift=-80mm, yshift=-114mm]current page.north east)
+    {45,000};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont, text=secondary]
+    at ([xshift=-14mm, yshift=-114mm]current page.north east)
+    {9.1\%};
+  % Other items
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-124mm]current page.north west) --
+    ([xshift=-14mm, yshift=-124mm]current page.north east);
+  \node[anchor=north west, inner sep=0pt, text width=0.40\paperwidth,
+        font=\fontsize{8}{11}\selectfont, text=secondary]
+    at ([xshift=14mm, yshift=-127mm]current page.north west)
+    {Website/cloud + Licences + Contingency};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont\bfseries, text=secondary]
+    at ([xshift=-80mm, yshift=-127mm]current page.north east)
+    {76,500};
+  \node[anchor=north east, inner sep=0pt,
+        font=\fontsize{8}{11}\selectfont, text=secondary]
+    at ([xshift=-14mm, yshift=-127mm]current page.north east)
+    {15.5\%};
+}
+
+
+
+% ================================================================
+% SLIDE 9 — FINANCIAL CASE
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{FINANCIALS}{%
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.42\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{24}{28}\selectfont\displayfont{%
+      3-Year \textcolor{accent}{P\&L}\par
+      Projection}}};
+  % ── Vertical divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=0mm, yshift=-28mm]current page.north) --
+    ([xshift=0mm, yshift=4mm]current page.south);
+  % ── Right: Break-even ──
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north)
+    {{\fontsize{8}{10}\selectfont\color{secondary}\MakeUppercase{Break-even Analysis}}\par
+     \vspace{6pt}{\fontsize{8}{12}\selectfont\color{primary}%
+     \blt Fixed costs/mo: \textbf{140,150 ETB}\par
+     \vspace{2pt}\blt Margin/client: \textbf{6,850 ETB}\par
+     \vspace{2pt}\blt \textcolor{accent}{\textbf{21 clients $\Rightarrow$ Month 7}}}};
+  % ── Right: Balance Sheet ──
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=-78mm]current page.north)
+    {{\fontsize{8}{10}\selectfont\color{secondary}\MakeUppercase{Balance Sheet (End Y1)}}\par
+     \vspace{6pt}{\fontsize{8}{12}\selectfont\color{primary}%
+     Assets: 189,600 ETB\par
+     Liabilities: 30,000 ETB\par
+     \textbf{Equity: 159,600 ETB}}};
+  % ── Divider under headline ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=-50mm]current page.north west) --
+    ([xshift=0mm, yshift=-50mm]current page.north);
+  % ── P&L Table (using clean tabular for perfect alignment) ──
+  \node[anchor=north west, inner sep=0pt]
+    at ([xshift=14mm, yshift=-54mm]current page.north west)
+    {%
+      \renewcommand{\arraystretch}{1.4}%
+      \fontsize{8}{13}\selectfont%
+      \begin{tabular}{@{} l r r r @{}}
+        \multicolumn{1}{@{}l}{\fontsize{7}{9}\selectfont\bfseries\color{secondary}} &
+        \multicolumn{1}{c}{\fontsize{7}{9}\selectfont\bfseries\color{secondary}\hspace{12pt}Y1\hspace{12pt}} &
+        \multicolumn{1}{c}{\fontsize{7}{9}\selectfont\bfseries\color{secondary}\hspace{12pt}Y2\hspace{12pt}} &
+        \multicolumn{1}{c}{\fontsize{7}{9}\selectfont\bfseries\color{secondary}\hspace{12pt}Y3\hspace{12pt}} \\
+        \hline
+        \textbf{Revenue} & 1,755,000 & 4,995,000 & 8,235,000 \\
+        \color{secondary}Expenses & \color{secondary}1,821,800 & \color{secondary}2,284,160 & \color{secondary}2,936,500 \\
+        \hline
+        \textbf{Net} & \textbf{\textcolor{accent}{(218,900)}} & \textbf{\textcolor{accent}{2,277,940}} & \textbf{\textcolor{accent}{4,584,800}} \\
+      \end{tabular}%
+    };
+  % ── Cash flow note ──
+  \node[anchor=south west, inner sep=0pt, text width=0.46\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary]
+    at ([xshift=14mm, yshift=10mm]current page.south west)
+    {\MakeUppercase{Cash Flow Y1: Startup +253K → M3 balance 126K →
+    M6 balance 80K → M12 balance 54.6K ETB.}};
+}
+
+
+
+% ================================================================
+% SLIDE 9b — FINANCIAL CHART
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{GROWTH TRAJECTORY}{%
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.42\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{24}{28}\selectfont\displayfont{%
+      Growth\par
+      \textcolor{accent}{Trajectory}}}};
+  % ── Vertical divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=0mm, yshift=-28mm]current page.north) --
+    ([xshift=0mm, yshift=4mm]current page.south);
+  % ── Right: Key Insights ──
+  \node[anchor=north west, inner sep=0pt, text width=0.38\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north)
+    {{\fontsize{8}{10}\selectfont\color{secondary}\MakeUppercase{Growth Insights}}\par
+     \vspace{6pt}{\fontsize{8}{12}\selectfont\color{primary}%
+     \blt \textbf{116\% CAGR}: Compounding subscription growth from Y1 to Y3.\par
+     \vspace{4pt}\blt \textbf{Operational Leverage}: Net margin climbs to \textbf{55.6\%} in Y3 as hosting costs remain low while revenues scale.\par
+     \vspace{4pt}\blt \textbf{Funding Runway}: Y1 startup net loss of \textbf{(218,900) ETB} is fully covered by the initial 495K ETB reserve, leading to clean cash flow.}};
+  % ── Divider under headline ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=-55mm]current page.north west) --
+    ([xshift=0mm, yshift=-55mm]current page.north);
+  % ── Financial Chart (Grouped Bar Chart) ──
+  \begin{scope}[shift={([xshift=22mm, yshift=24mm]current page.south west)}]
+    % Axis lines
+    \draw[divider, line width=0.6pt] (0, 0) -- (90mm, 0);
+    \draw[divider!60, line width=0.4pt, dashed] (0, 15mm) -- (90mm, 15mm);
+    \draw[divider!60, line width=0.4pt, dashed] (0, 30mm) -- (90mm, 30mm);
+    \draw[divider!60, line width=0.4pt, dashed] (0, 45mm) -- (90mm, 45mm);
+    \draw[divider!60, line width=0.4pt, dashed] (0, -5mm) -- (90mm, -5mm);
+
+    % Y-axis labels
+    \node[anchor=east, font=\fontsize{6}{8}\selectfont\color{secondary}] at (-2mm, 45mm) {9M};
+    \node[anchor=east, font=\fontsize{6}{8}\selectfont\color{secondary}] at (-2mm, 30mm) {6M};
+    \node[anchor=east, font=\fontsize{6}{8}\selectfont\color{secondary}] at (-2mm, 15mm) {3M};
+    \node[anchor=east, font=\fontsize{6}{8}\selectfont\color{secondary}] at (-2mm, 0mm) {0M};
+    \node[anchor=east, font=\fontsize{6}{8}\selectfont\color{secondary}] at (-2mm, -5mm) {-1M};
+
+    % X-axis categories & bars
+    % Year 1
+    \fill[primary!20, rounded corners=1pt] (12mm, 0) rectangle (18mm, 8.8mm);
+    \fill[accent, rounded corners=1pt] (18mm, 0) rectangle (24mm, -1.1mm);
+    \node[anchor=south, font=\fontsize{6}{8}\selectfont\bfseries\color{primary}] at (15mm, 9.5mm) {1.76M};
+    \node[anchor=north, font=\fontsize{6}{8}\selectfont\bfseries\color{accent}] at (21mm, -2mm) {(219K)};
+    \node[anchor=north, font=\fontsize{7}{9}\selectfont\bfseries\color{secondary}] at (18mm, -6mm) {Y1};
+
+    % Year 2
+    \fill[primary!20, rounded corners=1pt] (42mm, 0) rectangle (48mm, 25mm);
+    \fill[accent, rounded corners=1pt] (48mm, 0) rectangle (54mm, 11.4mm);
+    \node[anchor=south, font=\fontsize{6}{8}\selectfont\bfseries\color{primary}] at (45mm, 25.5mm) {5.00M};
+    \node[anchor=south, font=\fontsize{6}{8}\selectfont\bfseries\color{accent}] at (51mm, 12mm) {2.28M};
+    \node[anchor=north, font=\fontsize{7}{9}\selectfont\bfseries\color{secondary}] at (48mm, -6mm) {Y2};
+
+    % Year 3
+    \fill[primary!20, rounded corners=1pt] (72mm, 0) rectangle (78mm, 41.2mm);
+    \fill[accent, rounded corners=1pt] (78mm, 0) rectangle (84mm, 22.9mm);
+    \node[anchor=south, font=\fontsize{6}{8}\selectfont\bfseries\color{primary}] at (75mm, 41.7mm) {8.24M};
+    \node[anchor=south, font=\fontsize{6}{8}\selectfont\bfseries\color{accent}] at (81mm, 23.5mm) {4.58M};
+    \node[anchor=north, font=\fontsize{7}{9}\selectfont\bfseries\color{secondary}] at (78mm, -6mm) {Y3};
+
+    % Legend
+    \fill[primary!20] (65mm, 52mm) rectangle (69mm, 54mm);
+    \node[anchor=west, font=\fontsize{6}{8}\selectfont\color{primary}] at (70mm, 53mm) {REVENUE};
+    \fill[accent] (65mm, 47mm) rectangle (69mm, 49mm);
+    \node[anchor=west, font=\fontsize{6}{8}\selectfont\color{primary}] at (70mm, 48mm) {NET PROFIT};
+  \end{scope}
+  % ── Dot indicator (round) ──
+  \node[anchor=south east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=44mm]current page.south east)
+    {\dotindicator};
+}
+
+
+% ================================================================
+% SLIDE 10 — RISKS & MITIGATIONS
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{KEY RISKS}{%
+  % ── Section number ──
+  \node[anchor=north east, inner sep=0pt]
+    at ([xshift=-14mm, yshift=-26mm]current page.north east)
+    {\displaynumgrey{11}};
+  % ── Headline ──
+  \node[anchor=north west, inner sep=0pt, text width=0.50\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{24}{28}\selectfont\displayfont{%
+      Risks \&\par
+      \textcolor{accent}{Mitigations}}}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=-50mm]current page.north west) --
+    ([xshift=-14mm, yshift=-50mm]current page.north east);
+  % ── Risk rows ──
+  % Row 1
+  \node[anchor=north west, inner sep=0pt, text width=0.22\paperwidth,
+        font=\fontsize{8.5}{11}\selectfont\bfseries]
+    at ([xshift=14mm, yshift=-56mm]current page.north west)
+    {\textcolor{accent}{Currency / Forex}};
+  \node[anchor=north east, inner sep=0pt, text width=0.64\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=secondary, align=left]
+    at ([xshift=-14mm, yshift=-56mm]current page.north east)
+    {ETB-denominated pricing; FX adjustment clauses in contracts; target exportable SaaS revenue.};
+  % Divider
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-68mm]current page.north west) --
+    ([xshift=-14mm, yshift=-68mm]current page.north east);
+  % Row 2
+  \node[anchor=north west, inner sep=0pt, text width=0.22\paperwidth,
+        font=\fontsize{8.5}{11}\selectfont\bfseries]
+    at ([xshift=14mm, yshift=-72mm]current page.north west)
+    {\textcolor{accent}{Infrastructure}};
+  \node[anchor=north east, inner sep=0pt, text width=0.64\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=secondary, align=left]
+    at ([xshift=-14mm, yshift=-72mm]current page.north east)
+    {Redundant ISPs, backup power, multi-cloud hosting, offline support workflows.};
+  % Divider
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-84mm]current page.north west) --
+    ([xshift=-14mm, yshift=-84mm]current page.north east);
+  % Row 3
+  \node[anchor=north west, inner sep=0pt, text width=0.22\paperwidth,
+        font=\fontsize{8.5}{11}\selectfont\bfseries]
+    at ([xshift=14mm, yshift=-88mm]current page.north west)
+    {\textcolor{accent}{Talent Drain}};
+  \node[anchor=north east, inner sep=0pt, text width=0.64\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=secondary, align=left]
+    at ([xshift=-14mm, yshift=-88mm]current page.north east)
+    {Equity/profit-sharing, remote-friendly policy, mentorship culture.};
+  % Divider
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-100mm]current page.north west) --
+    ([xshift=-14mm, yshift=-100mm]current page.north east);
+  % Row 4
+  \node[anchor=north west, inner sep=0pt, text width=0.22\paperwidth,
+        font=\fontsize{8.5}{11}\selectfont\bfseries]
+    at ([xshift=14mm, yshift=-104mm]current page.north west)
+    {\textcolor{accent}{Regulatory}};
+  \node[anchor=north east, inner sep=0pt, text width=0.64\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=secondary, align=left]
+    at ([xshift=-14mm, yshift=-104mm]current page.north east)
+    {Written contracts, documented IP ownership, Labour Proclamation No.\ 1156/2019 compliance.};
+  % Divider
+  \draw[divider!40, line width=0.2pt]
+    ([xshift=14mm, yshift=-116mm]current page.north west) --
+    ([xshift=-14mm, yshift=-116mm]current page.north east);
+  % Row 5
+  \node[anchor=north west, inner sep=0pt, text width=0.22\paperwidth,
+        font=\fontsize{8.5}{11}\selectfont\bfseries]
+    at ([xshift=14mm, yshift=-120mm]current page.north west)
+    {\textcolor{accent}{Regional Instability}};
+  \node[anchor=north east, inner sep=0pt, text width=0.64\paperwidth,
+        font=\fontsize{7.5}{11}\selectfont, text=secondary, align=left]
+    at ([xshift=-14mm, yshift=-120mm]current page.north east)
+    {Addis Ababa-first focus, remote-delivery model reduces geographic exposure.};
+}
+
+
+
+% ================================================================
+% SLIDE 11 — EXIT STRATEGY & THE ASK (Closing slide)
+% ================================================================
+\newpage\noindent
+\begin{tikzpicture}[remember picture, overlay]
+\fill[framebg] (current page.south west) rectangle (current page.north east);
+\end{tikzpicture}%
+\noindent
+\slidecard{THE ASK}{%
+  % ── Big closing statement ──
+  \node[anchor=north west, inner sep=0pt, text width=0.52\paperwidth]
+    at ([xshift=14mm, yshift=-28mm]current page.north west)
+    {{\fontsize{30}{34}\selectfont\displayfont{%
+      Join Us in\par
+      Building \textcolor{accent}{the Digital ---}\par
+      Infrastructure\par
+      Layer.}}};
+  % ── Dot indicator (round) ──
+  \node[anchor=west, inner sep=0pt]
+    at ([xshift=14mm, yshift=-6mm]current page.west)
+    {\dotindicator};
+  % ── Right: Exit options ──
+  \node[anchor=north east, inner sep=0pt, text width=0.36\paperwidth]
+    at ([xshift=-14mm, yshift=-28mm]current page.north east)
+    {{\fontsize{8}{10}\selectfont\color{secondary}\MakeUppercase{Exit Options}}\par
+     \vspace{6pt}{\fontsize{8}{12}\selectfont\color{primary}%
+     \blt Trade sale to a third party\par
+     \vspace{2pt}\blt Acquisition by regional tech operator\par
+     \vspace{2pt}\blt Asset liquidation (last resort)}\par
+     \vspace{10pt}{\fontsize{8}{10}\selectfont\color{secondary}\MakeUppercase{Valuation}}\par
+     \vspace{4pt}{\fontsize{8}{12}\selectfont\color{primary}%
+     2x--4x SDE or ARR-based SaaS multiple, adjusted for churn, IP, and founder dependency.}};
+  % ── Divider ──
+  \draw[divider, line width=0.4pt]
+    ([xshift=14mm, yshift=38mm]current page.south west) --
+    ([xshift=-14mm, yshift=38mm]current page.south east);
+  % ── Bottom: Investment callout ──
+  \node[anchor=south west, inner sep=0pt]
+    at ([xshift=14mm, yshift=14mm]current page.south west)
+    {{\fontsize{48}{52}\selectfont\displayfont{\textcolor{accent}{495K}}}};
+  \node[anchor=south west, inner sep=0pt,
+        font=\fontsize{9}{12}\selectfont, text=primary]
+    at ([xshift=120mm, yshift=22mm]current page.south west)
+    {\bfseries ETB};
+  \node[anchor=south west, inner sep=0pt, text width=0.30\paperwidth,
+        font=\fontsize{7}{10}\selectfont, text=secondary]
+    at ([xshift=120mm, yshift=14mm]current page.south west)
+    {A stake in a zero-debt, subscription-compounding\\business with clean IP and a clear path to profitability.};
+  % ── Closing line ──
+  \node[anchor=south east, inner sep=0pt,
+        font=\fontsize{10}{13}\selectfont\bfseries, text=primary]
+    at ([xshift=-14mm, yshift=10mm]current page.south east)
+    {We are \textcolor{accent}{Nura Digital.}\hspace{6pt}Thank you.};
+}
+
+
+
+\end{document}
